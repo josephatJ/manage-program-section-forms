@@ -54,8 +54,6 @@
             <div class="col-12">
               <div cdkDropListGroup>
                 <div class="example-container">
-                  <!-- <h2>To do</h2> -->
-
                   <div
                     cdkDropList
                     [cdkDropListData]="
@@ -78,8 +76,6 @@
                 </div>
 
                 <div class="example-container">
-                  <!-- <h2>Done</h2> -->
-
                   <div
                     cdkDropList
                     [cdkDropListData]="selectedDataElements"
@@ -156,9 +152,6 @@
             style="margin-top: 15px"
           />
         </div>
-
-        {{ name }}
-        {{ description }}
         <button
           style="margin-top: 15px"
           [disabled]="saving || !selectedProgram"
@@ -182,11 +175,99 @@
       (click)="changeTab($event, 2)"
     >
       <div class="p-3" *ngIf="selectedTab.value == 2">
+        
         <div class="programs">
           <app-selection-filter
             [options]="programs"
             (selectedItem)="onSelectProgram($event, 'datastore')"
           ></app-selection-filter>
+        </div>
+
+        <div class="sections">
+          <app-selection-filter
+            [options]="selectedProgram?.programStages[0]?.programStageSections"
+            (selectedItem)="onSelectConfigSection($event)"
+          ></app-selection-filter>
+        </div>
+        
+
+        <div *ngIf="currentProgramStageSection">
+          <input
+                style="
+                  padding: 3px;
+                  border: none;
+                  border-bottom: solid 1px #2e2e2e;
+                  border-radius: 0;
+                "
+                class="form-control"
+                [(ngModel)]="searchString"
+              />
+          <div cdkDropListGroup>
+            <div class="example-container">
+              <div
+                cdkDropList
+                [cdkDropListData]="
+                allIndicators | filterByText: searchString
+                "
+                class="example-list"
+                (cdkDropListDropped)="drop($event)"
+              >
+                <div
+                  class="example-box"
+                  *ngFor="
+                    let item of allIndicators
+                      | filterByText: searchString
+                  "
+                  cdkDrag
+                >
+                  {{ item?.name }}
+                </div>
+              </div>
+            </div>
+
+            <div class="example-container">
+              <div
+                cdkDropList
+                [cdkDropListData]="currentSectionIndicators"
+                class="example-list"
+                (cdkDropListDropped)="drop($event)"
+              >
+                <div
+                  class="example-box"
+                  *ngFor="let item of currentSectionIndicators"
+                  cdkDrag
+                >
+                  {{ item?.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <button
+          style="margin-top: 15px"
+          [disabled]="saving"
+          mat-stroked-button
+          class="mr-2 float-right"
+          (click)="onSaveDataStoreConfigs($event)"
+        >
+          <mat-spinner
+            *ngIf="saving"
+            color="accent"
+            [diameter]="20"
+            style="display: inline-block !important; margin-right: 4px"
+          >
+          </mat-spinner>
+          Save
+        </button>
+        <button
+          style="margin-top: 15px"
+          [disabled]="saving"
+          mat-stroked-button
+          class="mr-2 float-right"
+          (click)="onAddDataStoreConfigs($event)"
+        >
+          Add
+        </button>
         </div>
       </div>
     </mat-tab>

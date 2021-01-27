@@ -30,6 +30,10 @@ export class ProgramsComponent implements OnInit {
   selectedTab = new FormControl(0);
   name: string;
   description: string;
+  configurations: any[]
+  currentSectionIndicators: string[];
+  allIndicators: any[];
+  formattedIndicators: any[]
   constructor(private httpClient: NgxDhis2HttpClientService) {}
 
   ngOnInit(): void {}
@@ -41,16 +45,105 @@ export class ProgramsComponent implements OnInit {
 
   onSelectProgram(program, type?) {
     this.selectedProgram = program;
-    this.allDataElements = _.map(
-      program?.programStages[0]?.programStageDataElements,
-      (programStageDataElement) => {
-        return {
-          id: programStageDataElement?.dataElement?.id,
-          name: programStageDataElement?.dataElement?.name,
-        };
-      }
-    );
+    this.configurations = [];
+    this.currentSectionIndicators = [];
+    this.allIndicators = this.selectedProgram?.programIndicators;
+    if (!type) {
+      
+      this.allDataElements = _.map(
+        program?.programStages[0]?.programStageDataElements,
+        (programStageDataElement) => {
+          return {
+            id: programStageDataElement?.dataElement?.id,
+            name: programStageDataElement?.dataElement?.name,
+          };
+        }
+      );
+    } else {
+      this.httpClient.get("dataStore/msdqi-checklists/" + program?.id).subscribe(response => {
+        if (response) {
+          this.configurations = [];
+          this.configurations = response
+        }
+      })
+    }
   }
+
+  onSelectConfigSection(section) {
+    this.currentProgramStageSection = section;
+  }
+
+  onAddDataStoreConfigs(e) {
+    e.stopPropagation();
+    this.configurations =
+      _.filter(this.configurations, (configuration) => {
+        if (configuration?.id !== this.currentProgramStageSection?.id) {
+          return configuration;
+        }
+      })
+    this.configurations = [...this.configurations, {
+      id: this.currentProgramStageSection?.id,
+      name: this.currentProgramStageSection?.name,
+      indicators: _.map(this.currentSectionIndicators, ind => {
+        return ind?.id
+      })
+    }]
+  }
+
+  onSaveDataStoreConfigs(e) {
+    e.stopPropagation();
+    this.saving = true;
+    console.log("configurations", this.configurations);
+    this.httpClient
+      .put('dataStore/msdqi-checklists/' + this.selectedProgram?.id, this.configurations)
+      .subscribe((response) => {
+        if (response) {
+          setTimeout(() => {
+            this.saving = false;
+          }, 1000);
+        }
+      });
+  }
+
+  // onSetIndicator(item, e) {
+  //   e.stopPropagation();
+  //     this.currentSectionIndicators = _.uniqBy(
+  //     [...this.currentSectionIndicators, item],
+  //     'id'
+  //   );
+  //   this.formattedIndicators = _.orderBy(
+  //     _.filter(this.allIndicators, (ind) => {
+  //       if (
+  //         (_.filter(this.currentSectionIndicators, { id: ind?.id }) || [])
+  //           ?.length == 0
+  //       ) {
+  //         return ind;
+  //       }
+  //     }),
+  //     ['name'],
+  //     ['asc']
+  //   );
+  // }
+
+  // onRemoveIndicator(item, e) {
+  //   e.stopPropagation();
+  //     this.currentSectionIndicators = _.uniqBy(
+  //     [...this.currentSectionIndicators, item],
+  //     'id'
+  //   );
+  //   this.formattedIndicators = _.orderBy(
+  //     _.filter(this.allIndicators, (ind) => {
+  //       if (
+  //         (_.filter(this.currentSectionIndicators, { id: ind?.id }) || [])
+  //           ?.length == 0
+  //       ) {
+  //         return ind;
+  //       }
+  //     }),
+  //     ['name'],
+  //     ['asc']
+  //   );
+  // }
 
   onSaveProgramSection(e) {
     e.stopPropagation();
@@ -115,7 +208,7 @@ export class ProgramsComponent implements OnInit {
         ['name'],
         ['asc']
       );
-      console.log(this.currentProgramStageSection);
+      // console.log(this.currentProgramStageSection);
     }
   }
 
@@ -205,4 +298,6 @@ export class ProgramsComponent implements OnInit {
         }
       });
   }
+
+
 }
