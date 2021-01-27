@@ -1,0 +1,194 @@
+<div>
+  <!-- <mat-form-field
+    class="w-100 dataset-form-full-width"
+    style="margin-top: -1rem"
+  >
+    <mat-select
+      (selectionChange)="onSelectionChange($event)"
+      name="searchString"
+    >
+      <ngx-mat-select-search
+        [(ngModel)]="searchString"
+        name="search"
+      ></ngx-mat-select-search>
+      <mat-option *ngFor="let program of programs" [value]="program">
+        {{ program.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field> -->
+
+  <mat-tab-group
+    [selectedIndex]="selectedTab.value"
+    (selectedIndexChange)="selectedTab.setValue($event)"
+  >
+    <mat-tab label="Manage program sections" (click)="changeTab($event, 0)">
+      <div class="p-3" *ngIf="selectedTab.value == 0">
+        <div class="programs">
+          <app-selection-filter
+            [options]="programs"
+            (selectedItem)="onSelectItem($event, 'program')"
+          ></app-selection-filter>
+        </div>
+        <div class="sections" *ngIf="programStageSections">
+          <!-- programStageSections -->
+          <app-selection-filter
+            [options]="programStageSections"
+            (selectedItem)="onSelectItem($event, 'section')"
+          ></app-selection-filter>
+          <!-- {{ currentProgramStageSections | json }} -->
+        </div>
+        <div *ngIf="selectedDataElements && selectedDataElements?.length > 0">
+          <div class="row">
+            <div class="col-12">
+              <input
+                style="
+                  padding: 3px;
+                  border: none;
+                  border-bottom: solid 1px #2e2e2e;
+                  border-radius: 0;
+                "
+                class="form-control"
+                [(ngModel)]="searchString"
+              />
+            </div>
+            <div class="col-12">
+              <div cdkDropListGroup>
+                <div class="example-container">
+                  <!-- <h2>To do</h2> -->
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="
+                      formattedListOfDataElements | filterByText: searchString
+                    "
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="example-box"
+                      *ngFor="
+                        let item of formattedListOfDataElements
+                          | filterByText: searchString
+                      "
+                      cdkDrag
+                    >
+                      {{ item?.name }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="example-container">
+                  <!-- <h2>Done</h2> -->
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="selectedDataElements"
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="example-box"
+                      *ngFor="let item of selectedDataElements"
+                      cdkDrag
+                    >
+                      {{ item?.name }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12" style="margin-top: 15px">
+              <button
+                [disabled]="
+                  !selectedDataElements ||
+                  selectedDataElements?.length == 0 ||
+                  saving
+                "
+                mat-stroked-button
+                class="mr-2 float-right"
+                (click)="onSave($event)"
+              >
+                <mat-spinner
+                  *ngIf="saving"
+                  color="accent"
+                  [diameter]="20"
+                  style="display: inline-block !important; margin-right: 4px"
+                >
+                </mat-spinner>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Add program section" (click)="changeTab($event, 1)">
+      <div class="p-3" *ngIf="selectedTab.value == 1">
+        <div class="programs">
+          <app-selection-filter
+            [options]="programs"
+            (selectedItem)="onSelectProgram($event)"
+          ></app-selection-filter>
+        </div>
+
+        <div style="height: 200px; overflow: auto" *ngIf="selectedProgram">
+          <ul>
+            <li
+              *ngFor="
+                let section of selectedProgram?.programStages[0]
+                  ?.programStageSections
+              "
+            >
+              {{ section?.name }}
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="selectedProgram">
+          <input
+            [(ngModel)]="name"
+            class="form-control"
+            style="margin-top: 15px"
+          />
+          <input
+            [(ngModel)]="description"
+            class="form-control"
+            style="margin-top: 15px"
+          />
+        </div>
+
+        {{ name }}
+        {{ description }}
+        <button
+          style="margin-top: 15px"
+          [disabled]="saving || !selectedProgram"
+          mat-stroked-button
+          class="mr-2 float-right"
+          (click)="onSaveProgramSection($event)"
+        >
+          <mat-spinner
+            *ngIf="saving"
+            color="accent"
+            [diameter]="20"
+            style="display: inline-block !important; margin-right: 4px"
+          >
+          </mat-spinner>
+          Save
+        </button>
+      </div>
+    </mat-tab>
+    <mat-tab
+      label="Manage program indicators by sections"
+      (click)="changeTab($event, 2)"
+    >
+      <div class="p-3" *ngIf="selectedTab.value == 2">
+        <div class="programs">
+          <app-selection-filter
+            [options]="programs"
+            (selectedItem)="onSelectProgram($event, 'datastore')"
+          ></app-selection-filter>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,48 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 import { OrgUnitFilterConfig } from '@iapps/ngx-dhis2-org-unit-filter';
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' }
-];
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
-  pageEvent: any;
+  programs$: Observable<any>;
   orgUnitFilterConfig: OrgUnitFilterConfig;
-  constructor(private _snackBar: MatSnackBar) {}
+  constructor(private httpClient: NgxDhis2HttpClientService) {}
 
   ngOnInit() {
-    this.orgUnitFilterConfig = {
-      reportUse: false,
-      singleSelection: false
-    };
-  }
-
-  openSnackBar() {
-    this._snackBar.open('This is working', 'OK', {
-      duration: 2000
-    });
+    this.programs$ = this.httpClient.get(
+      'programs.json?filter=id:in:[CT0TNl30rld,RwVrL1Y8RTH,Z4szHfJebFL,jYsHdmTJNVh,go4MncVomkQ,R8APevjOH0o]&fields=id,name,programStages[id,name,programStageDataElements[dataElement[id,name]],programStageSections[id,name,sortOrder,dataElements[id,name]]],programIndicators[id,name]'
+    );
   }
 }
