@@ -1,3 +1,10 @@
 .application-content {
   margin-top: 50px;
 }
+.active-item {
+  background-color: #eee;
+  outline: none;
+}
+.active-item:hover {
+  outline: none;
+}

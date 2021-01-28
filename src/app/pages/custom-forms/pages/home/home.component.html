@@ -1,0 +1,16 @@
+<div style="margin-top: 70px">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <h2 style="text-align: center">CUSTOM FORMS</h2>
+  
+          <div class="p-3" *ngIf="{ forms: forms$ | async } as params">
+            <div *ngIf="params?.forms">
+              <app-format-custom-form [dataSets]="params?.forms?.dataSets"></app-format-custom-form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

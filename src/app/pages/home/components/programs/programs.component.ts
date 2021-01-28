@@ -93,7 +93,6 @@ export class ProgramsComponent implements OnInit {
   onSaveDataStoreConfigs(e) {
     e.stopPropagation();
     this.saving = true;
-    console.log("configurations", this.configurations);
     this.httpClient
       .put('dataStore/msdqi-checklists/' + this.selectedProgram?.id, this.configurations)
       .subscribe((response) => {
@@ -104,46 +103,6 @@ export class ProgramsComponent implements OnInit {
         }
       });
   }
-
-  // onSetIndicator(item, e) {
-  //   e.stopPropagation();
-  //     this.currentSectionIndicators = _.uniqBy(
-  //     [...this.currentSectionIndicators, item],
-  //     'id'
-  //   );
-  //   this.formattedIndicators = _.orderBy(
-  //     _.filter(this.allIndicators, (ind) => {
-  //       if (
-  //         (_.filter(this.currentSectionIndicators, { id: ind?.id }) || [])
-  //           ?.length == 0
-  //       ) {
-  //         return ind;
-  //       }
-  //     }),
-  //     ['name'],
-  //     ['asc']
-  //   );
-  // }
-
-  // onRemoveIndicator(item, e) {
-  //   e.stopPropagation();
-  //     this.currentSectionIndicators = _.uniqBy(
-  //     [...this.currentSectionIndicators, item],
-  //     'id'
-  //   );
-  //   this.formattedIndicators = _.orderBy(
-  //     _.filter(this.allIndicators, (ind) => {
-  //       if (
-  //         (_.filter(this.currentSectionIndicators, { id: ind?.id }) || [])
-  //           ?.length == 0
-  //       ) {
-  //         return ind;
-  //       }
-  //     }),
-  //     ['name'],
-  //     ['asc']
-  //   );
-  // }
 
   onSaveProgramSection(e) {
     e.stopPropagation();
@@ -211,49 +170,6 @@ export class ProgramsComponent implements OnInit {
       // console.log(this.currentProgramStageSection);
     }
   }
-
-  // selectItem(item, e) {
-  //   e.stopPropagation();
-  //   this.selectedDataElements = _.uniqBy(
-  //     [...this.selectedDataElements, item],
-  //     'id'
-  //   );
-  //   this.formattedListOfDataElements = _.orderBy(
-  //     _.filter(this.allDataElements, (dataElement) => {
-  //       if (
-  //         (_.filter(this.selectedDataElements, { id: dataElement?.id }) || [])
-  //           ?.length == 0
-  //       ) {
-  //         return dataElement;
-  //       }
-  //     }),
-  //     ['name'],
-  //     ['asc']
-  //   );
-  // }
-
-  // deSelectItem(item, e) {
-  //   e.stopPropagation();
-  //   this.selectedDataElements = _.filter(this.selectedDataElements, (elem) => {
-  //     if (elem?.id !== item?.id) {
-  //       return elem;
-  //     }
-  //   });
-
-  //   this.formattedListOfDataElements = _.orderBy(
-  //     _.filter(this.allDataElements, (dataElement) => {
-  //       if (
-  //         (_.filter(this.selectedDataElements, { id: dataElement?.id }) || [])
-  //           ?.length == 0
-  //       ) {
-  //         return dataElement;
-  //       }
-  //     }),
-  //     ['name'],
-  //     ['asc']
-  //   );
-  // }
-
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(

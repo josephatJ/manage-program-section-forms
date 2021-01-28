@@ -1,0 +1,29 @@
+<div class="custom-form" class="row">
+    <div class="col-12">
+        <div>
+            <mat-form-field
+              class="w-100 dataset-form-full-width"
+              style="margin-top: -1rem"
+            >
+              <mat-select
+                (selectionChange)="onSelectionChange($event.value)"
+                name="searchString"
+              >
+                <ngx-mat-select-search
+                  [(ngModel)]="searchString"
+                  name="search"
+                ></ngx-mat-select-search>
+                <mat-option *ngFor="let option of dataSets" [value]="option">
+                  {{ option.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div id='expression'>
+              
+          </div>
+          <div *ngIf="_htmlMarkup">
+              <div [innerHtml]="_htmlMarkup"></div>
+          </div>
+    </div>
+</div>
