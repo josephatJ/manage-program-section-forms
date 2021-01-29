@@ -21,7 +21,7 @@
     [selectedIndex]="selectedTab.value"
     (selectedIndexChange)="selectedTab.setValue($event)"
   >
-    <mat-tab label="Manage program sections" (click)="changeTab($event, 0)">
+    <mat-tab label="Program section dataelements" (click)="changeTab($event, 0)">
       <div class="p-3" *ngIf="selectedTab.value == 0">
         <div class="programs">
           <app-selection-filter
@@ -40,14 +40,8 @@
         <div *ngIf="selectedDataElements && selectedDataElements?.length > 0">
           <div class="row">
             <div class="col-12">
-              <input
-                style="
-                  padding: 3px;
-                  border: none;
-                  border-bottom: solid 1px #2e2e2e;
-                  border-radius: 0;
-                "
-                class="form-control"
+              <input placeholder="Search"
+                class="form-control searching-input"
                 [(ngModel)]="searchString"
               />
             </div>
@@ -118,30 +112,75 @@
         </div>
       </div>
     </mat-tab>
-    <mat-tab label="Add program section" (click)="changeTab($event, 1)">
+    <mat-tab label="Program sections addition & arrangement" (click)="changeTab($event, 1)">
       <div class="p-3" *ngIf="selectedTab.value == 1">
         <div class="programs">
           <app-selection-filter
             [options]="programs"
-            (selectedItem)="onSelectProgram($event)"
+            (selectedItem)="onSelectProgram($event, 'add-section')"
           ></app-selection-filter>
         </div>
 
-        <div style="min-height: 20px;max-height: 200px; overflow: auto" *ngIf="selectedProgram">
-          <ul>
+        <div style="min-height: 20px;max-height: 450px; overflow: auto" *ngIf="selectedProgram">
+          <!-- <ul>
             <li
-              *ngFor="
-                let section of selectedProgram?.programStages[0]
-                  ?.programStageSections
-              "
+              *ngFor="let section of programStageSections"
             >
               {{ section?.name }}
             </li>
-          </ul>
+          </ul> -->
+
+          <div cdkDropListGroup style="width: 90% !important">
+            <div class="example-container" style="width: 90% !important">
+              <div
+                cdkDropList
+                [cdkDropListData]="
+                programStageSections
+                "
+                class="example-list"
+                style="width: 90% !important"
+                (cdkDropListDropped)="drop($event)"
+              >
+                <div
+                  class="example-box"
+                  *ngFor="
+                    let item of programStageSections
+                  "
+                  cdkDrag
+                >
+                  {{ item?.name }}
+                </div>
+              </div>
+            </div>
+            </div>
         </div>
 
+        <div style="margin-bottom: 30px;" *ngIf="selectedProgram">
+          <button
+          style="margin: 15px 0 !important"
+          [disabled]="saving"
+          mat-stroked-button
+          class="mr-2 float-left"
+          (click)="onSaveSectionArrangements($event)"
+        >
+          <mat-spinner
+            *ngIf="saving"
+            color="accent"
+            [diameter]="20"
+            style="display: inline-block !important; margin-right: 4px"
+          >
+          </mat-spinner>
+          Save sections arrangement
+        </button>
+        </div>
+
+        
         <div *ngIf="selectedProgram">
-          <input placeholder="Name"
+          <div class="h3 text-left p-3">
+            Add program section
+          </div>
+          <div class="p-3">
+            <input placeholder="Name"
             [(ngModel)]="name"
             class="form-control"
             style="margin-top: 15px"
@@ -151,10 +190,11 @@
             class="form-control"
             style="margin-top: 15px"
           />
+          </div>
         </div>
-        <button
+        <button *ngIf="name"
           style="margin-top: 15px"
-          [disabled]="saving || !selectedProgram"
+          [disabled]="saving || !selectedProgram || name?.length < 3"
           mat-stroked-button
           class="mr-2 float-right"
           (click)="onSaveProgramSection($event)"
@@ -192,14 +232,8 @@
         
 
         <div *ngIf="currentProgramStageSection">
-          <input
-                style="
-                  padding: 3px;
-                  border: none;
-                  border-bottom: solid 1px #2e2e2e;
-                  border-radius: 0;
-                "
-                class="form-control"
+          <input placeholder="Search"
+                class="form-control searching-input"
                 [(ngModel)]="searchString"
               />
           <div cdkDropListGroup>

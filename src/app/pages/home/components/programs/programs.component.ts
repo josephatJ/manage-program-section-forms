@@ -8,6 +8,8 @@ import {
 import * as _ from 'lodash';
 import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 import { FormControl } from '@angular/forms';
+import { zip } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-programs',
@@ -44,13 +46,40 @@ export class ProgramsComponent implements OnInit {
     this.selectedTab.setValue(val);
   }
 
+  onSaveSectionArrangements(e) {
+    e.stopPropagation();
+    this.saving = true;
+    let formattedSections = _.map(this.programStageSections, (section, index) => {
+      return {
+        id: section?.id,
+        name: section?.name,
+        description: section?.description,
+        sortOrder: index,
+        programStage: {
+          id: this.selectedProgram?.programStages[0]?.id
+        },
+        dataElements: _.map(section?.dataElements, dataElement => {
+          return {id: dataElement?.id}
+        })
+      }
+    })
+    console.log("formattedSections",formattedSections)
+    zip(
+      ...formattedSections.map((formattedSection, index) => {
+        console.log("index", index)
+        this.httpClient.put('programStageSections/' + formattedSection?.id, formattedSection).subscribe(res => {
+          console.log(res)
+        })
+      })
+    );
+  }
+
   onSelectProgram(program, type?) {
     this.selectedProgram = program;
     this.configurations = [];
     this.currentSectionIndicators = [];
     this.allIndicators = this.selectedProgram?.programIndicators;
     if (!type) {
-      
       this.allDataElements = _.map(
         program?.programStages[0]?.programStageDataElements,
         (programStageDataElement) => {
@@ -60,7 +89,19 @@ export class ProgramsComponent implements OnInit {
           };
         }
       );
-    } else {
+    } else if (type =='add-section') {
+      this.allDataElements = _.map(
+        program?.programStages[0]?.programStageDataElements,
+        (programStageDataElement) => {
+          return {
+            id: programStageDataElement?.dataElement?.id,
+            name: programStageDataElement?.dataElement?.name,
+          };
+        }
+      );
+      this.programStageSections = program?.programStages[0]?.programStageSections
+    }
+    else {
       this.httpClient.get("dataStore/msdqi-checklists/" + program?.id).subscribe(response => {
         if (response) {
           this.configurations = [];
