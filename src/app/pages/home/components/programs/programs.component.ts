@@ -34,6 +34,7 @@ export class ProgramsComponent implements OnInit {
   currentSectionIndicators: string[];
   allIndicators: any[];
   formattedIndicators: any[]
+
   constructor(private httpClient: NgxDhis2HttpClientService) {}
 
   ngOnInit(): void {}
@@ -71,27 +72,33 @@ export class ProgramsComponent implements OnInit {
 
   onSelectConfigSection(section) {
     this.currentProgramStageSection = section;
+    this.currentSectionIndicators = [];
+    const filteredSectionConfigs = (_.filter(this.configurations, {id: section?.id}) || [])[0];
+    this.currentSectionIndicators = filteredSectionConfigs ? _.map(filteredSectionConfigs?.indicators, id => {
+      return (_.filter(this.allIndicators, {id: id}) || [])[0]
+    }) : []
   }
 
   onAddDataStoreConfigs(e) {
     e.stopPropagation();
-    this.configurations =
-      _.filter(this.configurations, (configuration) => {
-        if (configuration?.id !== this.currentProgramStageSection?.id) {
-          return configuration;
-        }
-      })
-    this.configurations = [...this.configurations, {
-      id: this.currentProgramStageSection?.id,
-      name: this.currentProgramStageSection?.name,
-      indicators: _.map(this.currentSectionIndicators, ind => {
-        return ind?.id
-      })
-    }]
+    
   }
 
   onSaveDataStoreConfigs(e) {
     e.stopPropagation();
+    const currentUpdatedSectionConfigs = {
+      ...(_.filter(this.configurations, {id: this.currentProgramStageSection?.id}) || [])[0],
+        id: this.currentProgramStageSection?.id,
+        name: this.currentProgramStageSection?.name,
+        indicators: _.map(this.currentSectionIndicators, ind => {
+          return ind?.id
+        })
+    }
+    this.configurations = [..._.filter(this.configurations, configs => {
+      if (configs?.id != currentUpdatedSectionConfigs?.id) {
+        return configs
+      }
+    }), currentUpdatedSectionConfigs]
     this.saving = true;
     this.httpClient
       .put('dataStore/msdqi-checklists/' + this.selectedProgram?.id, this.configurations)
@@ -151,23 +158,30 @@ export class ProgramsComponent implements OnInit {
     } else if (type == 'section') {
       this.currentProgramStageSection = selected;
       this.selectedDataElements = [];
-      this.selectedDataElements = [
-        ...this.selectedDataElements,
-        ...this.currentProgramStageSection?.dataElements,
-      ];
-      this.formattedListOfDataElements = _.orderBy(
-        _.filter(this.allDataElements, (dataElement) => {
-          if (
-            (_.filter(this.selectedDataElements, { id: dataElement?.id }) || [])
-              ?.length == 0
-          ) {
-            return dataElement;
-          }
-        }),
-        ['name'],
-        ['asc']
-      );
-      // console.log(this.currentProgramStageSection);
+
+      this.httpClient
+      .get('programStageSections/' + this.currentProgramStageSection?.id + ".json?fields=*,dataElements[id,name]")
+      .subscribe((response) => {
+        if (response) {
+          this.selectedDataElements = [
+            ...this.selectedDataElements,
+            ...response?.dataElements,
+          ];
+          this.formattedListOfDataElements = _.orderBy(
+            _.filter(this.allDataElements, (dataElement) => {
+              if (
+                (_.filter(this.selectedDataElements, { id: dataElement?.id }) || [])
+                  ?.length == 0
+              ) {
+                return dataElement;
+              }
+            }),
+            ['name'],
+            ['asc']
+          );
+        }
+      });
+     
     }
   }
   drop(event: CdkDragDrop<string[]>) {

@@ -1,15 +1,15 @@
 <div class="application-container container-fluid">
   <ngx-dhis2-menu></ngx-dhis2-menu>
   <div class="application-content row">
-    <div class="col-3">
-      <div class="h3 text-left" style="margin-top: 20px;">Menu</div>
+    <div class="col-2">
+      <div class="h3 text-left" style="margin-top: 20px; padding:5px 5px">Menu</div>
       <ul class="list-group">
         <li class="list-group-item" style="border: none;" [routerLink]="'/home'"
         routerLinkActive="active-item">MSDQI</li>
         <li class="list-group-item" [routerLink]="'/custom-forms'"  style="border: none;" routerLinkActive="active-item">HMIS</li>
       </ul>
     </div>
-    <div class="col-9">
+    <div class="col-10">
       <router-outlet></router-outlet>
     </div>
   </div>
