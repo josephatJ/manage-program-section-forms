@@ -63,12 +63,15 @@ export class ProgramsComponent implements OnInit {
         })
       }
     })
-    console.log("formattedSections",formattedSections)
     zip(
       ...formattedSections.map((formattedSection, index) => {
-        console.log("index", index)
         this.httpClient.put('programStageSections/' + formattedSection?.id, formattedSection).subscribe(res => {
-          console.log(res)
+          // console.log(res)
+          if (res) {
+            setTimeout(() => {
+              this.saving = false;
+            }, 1000)
+          }
         })
       })
     );
