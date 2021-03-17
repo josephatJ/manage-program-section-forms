@@ -2,11 +2,34 @@
   <ngx-dhis2-menu></ngx-dhis2-menu>
   <div class="application-content row">
     <div class="col-2">
-      <div class="h3 text-left" style="margin-top: 20px; padding:5px 5px">Menu</div>
+      <div class="h3 text-left" style="margin-top: 20px; padding: 5px 5px">
+        Menu
+      </div>
       <ul class="list-group">
-        <li class="list-group-item" style="border: none;" [routerLink]="'/home'"
-        routerLinkActive="active-item">MSDQI</li>
-        <li class="list-group-item" [routerLink]="'/custom-forms'"  style="border: none;" routerLinkActive="active-item">HMIS</li>
+        <li
+          class="list-group-item"
+          style="border: none"
+          [routerLink]="'/home'"
+          routerLinkActive="active-item"
+        >
+          MSDQI
+        </li>
+        <li
+          class="list-group-item"
+          [routerLink]="'/custom-forms'"
+          style="border: none"
+          routerLinkActive="active-item"
+        >
+          HMIS
+        </li>
+        <li
+          class="list-group-item"
+          [routerLink]="'/manage-indicators'"
+          style="border: none"
+          routerLinkActive="active-item"
+        >
+          Manage indicators
+        </li>
       </ul>
     </div>
     <div class="col-10">

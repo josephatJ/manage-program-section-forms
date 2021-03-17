@@ -20,14 +20,16 @@ import { NgxDhis2OrgUnitFilterModule } from '@iapps/ngx-dhis2-org-unit-filter';
 import { NgxDhis2DataFilterModule } from '@iapps/ngx-dhis2-data-filter';
 import { NgxDhis2PeriodFilterModule } from '@iapps/ngx-dhis2-period-filter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { sharedComponents } from '.';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
@@ -52,6 +54,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   ],
   exports: [
     FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
@@ -73,7 +76,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     NgxMatSelectSearchModule,
     DragDropModule,
     MatProgressSpinnerModule,
+    ...sharedComponents,
   ],
-  declarations: [],
+  declarations: [...sharedComponents],
 })
 export class SharedModule {}

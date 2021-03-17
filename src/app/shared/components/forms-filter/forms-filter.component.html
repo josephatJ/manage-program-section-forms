@@ -1,0 +1,13 @@
+<div>
+  <mat-form-field class="forms-multiple-selection w-100">
+    <mat-label>Select form</mat-label>
+    <mat-select
+      [(ngModel)]="formSelected"
+      (selectionChange)="onSelectForm($event.value)"
+    >
+      <mat-option *ngFor="let form of forms" [value]="form"
+        >{{ form?.name }} ({{ form?.indicators }})</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+</div>

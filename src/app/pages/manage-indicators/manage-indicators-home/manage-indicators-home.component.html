@@ -1,0 +1,38 @@
+<p>manage-indicators-home works!</p>
+<div
+  *ngIf="{
+    indicatorGroups: indicatorGroups$ | async,
+    indicators: indicators$ | async
+  } as indicatorParams"
+>
+  <div *ngIf="indicatorParams?.indicatorGroups">
+    <app-forms-filter
+      [forms]="indicatorParams?.indicatorGroups"
+      [formSelected]="groupSelected"
+      (selectedItem)="onSelectIndicatorGroup($event)"
+    ></app-forms-filter>
+    <mat-progress-bar
+      *ngIf="!indicatorParams?.indicatorGroups"
+      mode="indeterminate"
+    ></mat-progress-bar>
+
+    <div *ngIf="groupSelected">
+      <app-forms-filter
+        [forms]="indicatorParams?.indicators"
+        [formSelected]="indicatorSelected"
+        (selectedItem)="onSelectIndicator($event)"
+      ></app-forms-filter>
+    </div>
+
+    <!-- <section *ngIf="groupSelected" style="height: 200px; overflow: auto">
+      <mat-checkbox
+        [id]="indicator?.id"
+        (change)="onSelectItem($event, indicator)"
+        class="d-flex"
+        *ngFor="let indicator of indicatorParams?.indicators"
+      >
+        {{ indicator?.name }}
+      </mat-checkbox>
+    </section> -->
+  </div>
+</div>

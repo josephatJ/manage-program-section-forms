@@ -5,27 +5,36 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'home',
     loadChildren: () =>
-      import('./pages/home/home.module').then(m => m.HomeModule)
+      import('./pages/home/home.module').then((m) => m.HomeModule),
   },
   {
     path: 'custom-forms',
     loadChildren: () =>
-      import('./pages/custom-forms/custom-forms.module').then(m => m.CustomFormsModule)
-  }
+      import('./pages/custom-forms/custom-forms.module').then(
+        (m) => m.CustomFormsModule
+      ),
+  },
+  {
+    path: 'manage-indicators',
+    loadChildren: () =>
+      import('./pages/manage-indicators/manage-indicators.module').then(
+        (m) => m.ManageIndicatorsModule
+      ),
+  },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
       useHash: true,
-      preloadingStrategy: PreloadAllModules
-    })
+      preloadingStrategy: PreloadAllModules,
+    }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class RoutingModule {}
