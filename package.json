@@ -1,10 +1,10 @@
 {
-  "name": "ngx-seed-app",
+  "name": "msdqi-forms-management",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --aot && cd dist/ngx-seed-app && zip -r -D ngx-seed-app.zip .",
+    "build": "ng build --prod --aot && cd dist/msdqi-forms-management && zip -r -D msdqi-forms-management.zip .",
     "test": "",
     "test:travis": "",
     "lint": "ng lint",

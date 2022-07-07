@@ -41,7 +41,7 @@ export class FormatCustomFormComponent implements OnInit {
               expression += '#{' + id + '}' + plusSign
               //  '(#{o0KObJuu9Yu.o9Oj5Cjekej}+#{o0KObJuu9Yu.ZU3sKDB9i2o})/(1)'
             })
-            expression += ')/(1)" name="indicatorFormula" readonly="readonly" style="width:3.5em;text-align:center" />';
+            expression += ')/(1)" name="indicatorFormula" readonly="readonly" style="text-align:center" />';
             console.log(expression);
             document.getElementById('expression').innerText = expression;
             ids = [];
